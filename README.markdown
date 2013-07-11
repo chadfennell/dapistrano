@@ -6,6 +6,56 @@ Credit goes to railsless-deploy for many ideas here.
 
 ## Installation
 
-    # gem install dapistrano
+    # gem install capistrano
+    # gem install railsless-deploy
+    # gem install dapistrano --local dapistrano-0.0.1.gem
+    (For now, dapistrano is a UMN Internal utility)
 
-## More documentation to come.
+## Create a New Deployment Directory
+
+    # mkdir -p myproject/config/deploy
+    # cd myproject
+    # touch capfile
+
+## Edit the capfile
+
+    # require 'rubygems'
+    # require 'dapistrano'
+    
+![capfile](http://libsystems.org/images/dapistrano.png)
+
+## Create stage files:
+
+    # touch config/deploy/development.rb
+    # touch config/deploy/staging.rb
+    # touch config/deploy/production.rb
+    
+    config
+    └── deploy
+        ├── development.rb
+        ├── production.rb
+        └── staging.rb
+
+## Minimally configure development.rb and Drush Make Files
+
+[Example Deployment File](https://github.umn.edu/gist/raw/71/0895b4b3f3bca2ed254c694094c8541401e6cfed/gistfile1.rb):
+
+![capfile](http://libsystems.org/images/deploymentconfig.png)
+
+* Create the directories specified in ":deploy_to"
+
+## Run the setup task
+
+    # cap development deploy:setup
+    
+## Configure :deploy_to/shared directory
+
+* Place a copy of .htaccess, robots.txt and settings.php in your :deploy_to/shared directory:
+
+    your_app_here.dev
+    └── shared
+        ├── files/
+        ├── private/
+        ├── .htaccess <-- you manually add
+        ├── robots.txt <-- you manually add
+        └── settings.php <-- you manually add
