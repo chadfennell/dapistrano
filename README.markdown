@@ -38,7 +38,7 @@ Deploy Drupal with Drush Make.
 
 ## Minimally configure development.rb and Drush Make Files
 
-[Example Deployment File](https://github.umn.edu/gist/raw/72/26c3bf7083b13c7d459de731191cb2fa3f3e6e56/gistfile1.rb):
+[Example Deployment File](https://gist.github.com/chadfennell/5978955):
 
 ![capfile](http://libsystems.org/images/deploymentconfig.png)
 
