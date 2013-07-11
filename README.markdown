@@ -40,7 +40,7 @@ Deploy Drupal with Drush Make.
 
 [Example Deployment File](https://gist.github.com/chadfennell/5978955):
 
-![capfile](http://libsystems.org/images/deploymentconfig.png)
+![capfile](http://libsystems.org/images/deploymentscreenshot.png)
 
 * Create the directories specified in ":deploy_to"
 
