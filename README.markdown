@@ -11,20 +11,20 @@ Deploy Drupal with Drush Make.
     $ gem install dapistrano --local dapistrano-0.0.1.gem
     (For now, dapistrano is a UMN Internal utility)
 
-## Create a New Deployment Directory
+### Create a New Deployment Directory
 
     $ mkdir -p myproject/config/deploy
     $ cd myproject
     $ touch capfile
 
-## Edit the capfile
+### Edit the capfile
 
     $ require 'rubygems'
     $ require 'dapistrano'
     
 ![capfile](http://libsystems.org/images/dapistrano.png)
 
-## Create stage files:
+### Create stage files:
 
     $ touch config/deploy/development.rb
     $ touch config/deploy/staging.rb
@@ -36,7 +36,7 @@ Deploy Drupal with Drush Make.
         ├── production.rb
         └── staging.rb
 
-## Minimally configure development.rb and Drush Make Files
+### Minimally configure development.rb and Drush Make Files
 
 [Example Deployment File](https://gist.github.com/chadfennell/5978955):
 
@@ -44,11 +44,11 @@ Deploy Drupal with Drush Make.
 
 * Create the directories specified in ":deploy_to"
 
-## Run the setup task
+### Run the setup task
 
     $ cap development deploy:setup
     
-## Configure :deploy_to/shared directory
+### Configure :deploy_to/shared directory
 
     # Place a copy of .htaccess, robots.txt and settings.php in your :deploy_to/shared directory:
 
