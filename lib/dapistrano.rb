@@ -20,8 +20,21 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   set(:deploy_to) { "/var/www/#{application}" }
   set :shared_children, ['files', 'private']
+  set :core_files_to_remove, [
+    'INSTALL.mysql.txt',
+    'INSTALL.pgsql.txt',
+    'CHANGELOG.txt',
+    'COPYRIGHT.txt',
+    'INSTALL.txt',
+    'LICENSE.txt',
+    'MAINTAINERS.txt',
+    'UPGRADE.txt'
+  ]
 
-  after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "drush:cache_clear"
+  # files that frequently require local customization
+  set :override_core_files, ['robots.txt', '.htaccess']
+
+  after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "drupal:clear_apc", "drush:cache_clear"
 
   namespace :deploy do
     desc <<-DESC
@@ -58,6 +71,8 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "ls #{latest_release} | grep \.make" do |channel, stream, make_file|
         run "cd #{latest_release}; #{drush_command_path} make #{args} #{make_file} ."
       end
+      core_files = core_files_to_remove.map { |cf| File.join(latest_release, cf) }
+      run "rm #{core_files.join(' ')}"
     end
 
     desc "Symlink settings and files to shared directory. This allows the settings.php and \
@@ -66,6 +81,23 @@ Capistrano::Configuration.instance(:must_exist).load do
       ["files", "private", "settings.php"].each do |asset|
         run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/sites/default/#{asset}"
       end
+      override_core_files.each do |file|
+        run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
+      end
+    end
+
+    # Prevent apc memory allocation issues by clearing the apc cache
+    task :clear_apc do
+      puts 'Clearing APC Cache to prevent memory allocation errors'
+      script = <<-STRING
+      <?php
+      apc_clear_cache();
+      apc_clear_cache('user');
+      apc_clear_cache('opcode');
+      STRING
+      put script, "#{latest_release}/apc_clear.php"
+      run "curl #{application_url}/apc_clear.php"
+      # run "rm #{latest_release}/apc_clear.php"
     end
   end
 
