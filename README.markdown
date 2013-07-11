@@ -38,7 +38,7 @@ Credit goes to railsless-deploy for many ideas here.
 
 ## Minimally configure development.rb and Drush Make Files
 
-[Example Deployment File](https://github.umn.edu/gist/raw/71/0895b4b3f3bca2ed254c694094c8541401e6cfed/gistfile1.rb):
+[Example Deployment File](https://github.umn.edu/gist/raw/72/26c3bf7083b13c7d459de731191cb2fa3f3e6e56/gistfile1.rb):
 
 ![capfile](http://libsystems.org/images/deploymentconfig.png)
 
