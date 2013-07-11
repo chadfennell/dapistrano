@@ -54,7 +54,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "#{try_sudo} mkdir -p #{releases_path} #{shared_path}"
       run "#{try_sudo} chown -R #{user}:#{runner_group} #{deploy_to}"
       sub_dirs = shared_children.map { |d| File.join(shared_path, d) }
-      run "#{try_sudo} chmod 2775+s #{sub_dirs.join(' ')}"
+      run "#{try_sudo} mkdir -p #{sub_dirs.join(' ')}"
+      run "#{try_sudo} chown -R #{user}:#{runner_group} #{shared_path}"
+      run "#{try_sudo} chmod -R 2775 #{shared_path}"
     end
 
     # removed non rails stuff, ensure group writabilty
