@@ -59,3 +59,10 @@ Deploy Drupal with Drush Make.
         ├── .htaccess <-- you manually add
         ├── robots.txt <-- you manually add
         └── settings.php <-- you manually add
+
+## Deploy!
+
+    $ cap development deploy
+    $ cap development deploy:rollback <-- You now have an "undo" button
+    $ cap development drupal:updatedb <-- Site into maintenance mode, drush updatedb run, site put back online
+    
