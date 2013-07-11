@@ -98,7 +98,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       apc_clear_cache('opcode');
       STRING
       put script, "#{latest_release}/apc_clear.php"
-      run "curl #{application_url}/apc_clear.php"
+      run "curl #{application_uri}/apc_clear.php"
       # run "rm #{latest_release}/apc_clear.php"
     end
   end
