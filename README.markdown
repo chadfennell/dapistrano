@@ -1,8 +1,8 @@
 # Dapistrano
 
-This gem provides a number of tasks which are useful for deploying Drupal projects.
+Deploy Drupal with Drush Make.
 
-Credit goes to railsless-deploy for many ideas here.
+* Ideas and code "borrowed" from https://github.com/previousnext/capistrano-drupal
 
 ## Installation
 
