@@ -109,7 +109,6 @@ Capistrano::Configuration.instance(:must_exist).load do
     task :updatedb, :on_error => :continue do
       :site_offline
       run "#{drush_command_path} -r #{latest_release} updatedb -y"
-      :cache_clear
       :site_online
     end
 
