@@ -4,44 +4,26 @@ Deploy Drupal with Drush Make.
 
 * Ideas and code "borrowed" from https://github.com/previousnext/capistrano-drupal
 
+## Pre-installation
+
+* Set-up SSK keys between the server from which you will deploy to your target server
+
 ## Installation
+
+### Install dependencies
+
 
     $ gem install capistrano
     $ gem install railsless-deploy
     $ gem install dapistrano --local dapistrano-0.0.1.gem
     (For now, dapistrano is a UMN Internal utility)
 
-### Create a New Deployment Directory
+### Initialize New Deployment Directory
 
-    $ mkdir -p myproject/config/deploy
     $ cd myproject
-    $ touch capfile
+    $ dapify .
 
-### Edit the capfile
-
-    $ require 'rubygems'
-    $ require 'dapistrano'
-    
-![capfile](http://libsystems.org/images/dapistrano.png)
-
-### Create stage files:
-
-    $ touch config/deploy/development.rb
-    $ touch config/deploy/staging.rb
-    $ touch config/deploy/production.rb
-    
-    config
-    └── deploy
-        ├── development.rb
-        ├── production.rb
-        └── staging.rb
-
-### Minimally configure development.rb and Drush Make Files
-
-[Example Deployment File](https://gist.github.com/chadfennell/5978955):
-
-![capfile](http://libsystems.org/images/deploymentscreenshot.png)
-
+* Configure config/deploy/development.rb (Optional: create staging.rb and production.rb configurations based on this file)
 * Create the directories specified in ":deploy_to"
 
 ### Run the setup task
