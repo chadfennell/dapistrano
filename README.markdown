@@ -6,7 +6,7 @@ Deploy Drupal with Drush Make.
 
 ## Pre-installation
 
-* Set-up SSK keys between the server from which you will deploy to your target server
+* Set-up SSK keys between the server from which you will deploy and that of your target server.
 
 ## Installation
 
@@ -29,7 +29,7 @@ Deploy Drupal with Drush Make.
 ### Run the setup task
 
     $ cap development deploy:setup
-    
+
 ### Configure :deploy_to/shared directory
 
     # Place a copy of .htaccess, robots.txt and settings.php in your :deploy_to/shared directory:
@@ -47,4 +47,4 @@ Deploy Drupal with Drush Make.
     $ cap development deploy
     $ cap development deploy:rollback <-- You now have an "undo" button
     $ cap development drupal:updatedb <-- Site into maintenance mode, drush updatedb run, site put back online
-    
+
