@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     "dapistrano.gemspec",
     "lib/dapistrano.rb"
   ]
+  s.executables << 'dapify'
   s.homepage = "https://github.com/chadfennell/dapistrano"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.25"

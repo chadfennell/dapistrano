@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'fileutils'
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename($0)} [path]"
+
+  opts.on("-h", "--help", "Displays this help info") do
+    puts opts
+    exit 0
+  end
+
+  begin
+    opts.parse!(ARGV)
+  rescue OptionParser::ParseError => e
+    warn e.message
+    puts opts
+    exit 1
+  end
+end
+
+if ARGV.empty?
+  abort "Please specify the directory to dapify, e.g. `#{File.basename($0)} .'"
+elsif !File.exists?(ARGV.first)
+  abort "`#{ARGV.first}' does not exist."
+elsif !File.directory?(ARGV.first)
+  abort "`#{ARGV.first}' is not a directory."
+elsif ARGV.length > 1
+  abort "Too many arguments; please specify only the directory to dapify."
+end
+
+def unindent(string)
+  indentation = string[/\A\s*/]
+  string.strip.gsub(/^#{indentation}/, "")
+end
+
+files = {
+  "Capfile" => unindent(<<-FILE),
+
+    require 'rubygems'
+    require 'dapistrano'
+
+    load 'config/deploy' # remove this line to skip loading any of the default tasks
+  FILE
+
+  "config/deploy.rb" => '# The Repository for the drush make file
+set :repository,  "git@github.com:usernamehere/yourapp_make.git"
+
+# Establishes the source code management system is git
+set :scm, :git
+set :scm_verbose,  true
+
+# Add arguments to the make build process. Here we ensure that .git directories
+# from each project repository are preserved (useful on your dev instance)
+set :make_args, "--working-copy"
+
+# The default branch is "master", override this setting here
+# set :branch, "1.x-development"
+
+# The root directory name (not path) of your application
+set :application, "your_app_here.dev"
+# A web accessible URI of your application
+set :application_uri, "http://example.org"
+
+# The absolute path of where to deploy this application (note the use of the
+# :application symbol)
+set :deploy_to, "/var/www/apps/somwhere}/#{application}"
+
+# Linux user and group settings
+set :user, "usernamehere"
+set :runner_group, "deploy"
+
+# The hostnames to deploy to.
+role :web, "example.org", :primary => true
+
+# System path location of the drush command
+set :drush_command_path, "/usr/bin/drush"'}
+
+base = ARGV.shift
+files.each do |file, content|
+  file = File.join(base, file)
+  if File.exists?(file)
+    warn "[skip] '#{file}' already exists"
+  elsif File.exists?(file.downcase)
+    warn "[skip] '#{file.downcase}' exists, which could conflict with `#{file}'"
+  else
+    unless File.exists?(File.dirname(file))
+      puts "[add] making directory '#{File.dirname(file)}'"
+      FileUtils.mkdir(File.dirname(file))
+    end
+    puts "[add] writing '#{file}'"
+    File.open(file, "w") { |f| f.write(content) }
+  end
+end
+
+puts "[done] dapified!"
