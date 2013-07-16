@@ -99,7 +99,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       STRING
       put script, "#{latest_release}/apc_clear.php"
       run "curl #{application_uri}/apc_clear.php"
-      # run "rm #{latest_release}/apc_clear.php"
+      run "rm #{latest_release}/apc_clear.php"
     end
   end
 
