@@ -61,8 +61,9 @@ set :application, "your_app_here.dev"
 set :application_uri, "http://example.org"
 
 # The absolute path of where to deploy this application (note the use of the
-# :application symbol)
-set :deploy_to, "/var/www/apps/somwhere}/#{application}"
+# :application symbol). Consider using an environmental variable like 
+# "apps/#{ENV['USER']}/#{application}" to generalize the dev location
+set :deploy_to, "/var/www/apps/somwhere/#{application}"
 
 # Linux user and group settings
 set :user, "usernamehere"
