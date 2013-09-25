@@ -6,15 +6,15 @@ Deploy Drupal with Drush Make.
 
 ## Pre-installation
 
-* Set-up SSH keys between the server from which you will deploy and that of your target server.
-* Ensure that your Drupal database is accessible from your target server.
+* Set up SSH key access from your deployment machine, e.g. your laptop, to your target machine, e.g. your web server.
+* Ensure that your Drupal database is accessible from your target machine.
 
 ## Installation
 
 ### Install dependencies
 
 For now, dapistrano is a UMN-internal utility, and not released to rubygems.org. Therefore, start by
-cloning this dapistrano repository on the machine where you want to install it, and then:
+cloning this dapistrano repository on your deployment machine, and then:
 
     $ gem install capistrano
     $ gem install railsless-deploy
