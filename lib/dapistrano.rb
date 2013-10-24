@@ -3,6 +3,8 @@ Capistrano::Configuration.instance(:must_exist).load do
   require 'capistrano/recipes/deploy/scm'
   require 'capistrano/ext/multistage'
   require 'railsless-deploy'
+  require 'net/http'
+  require 'uri'
 
   # =========================================================================
   # These variables may be set in the client capfile if their default values
@@ -34,7 +36,11 @@ Capistrano::Configuration.instance(:must_exist).load do
   # files that frequently require local customization
   set :override_core_files, ['robots.txt', '.htaccess']
 
-  after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "drupal:clear_apc", "drush:cache_clear"
+  after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "drush:cache_clear"
+
+  # WARNING! This task must be executed AFTER deploy:create_symlink, because it
+  # depends on the newly-created docroot being web-accessible.
+  after "deploy:create_symlink", "php:apc_clear"
 
   namespace :deploy do
     desc <<-DESC
@@ -88,19 +94,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
     end
 
-    # Prevent apc memory allocation issues by clearing the apc cache
-    task :clear_apc do
-      puts 'Clearing APC Cache to prevent memory allocation errors'
-      script = <<-STRING
-      <?php
-      apc_clear_cache();
-      apc_clear_cache('user');
-      apc_clear_cache('opcode');
-      STRING
-      put script, "#{latest_release}/apc_clear.php"
-      run "curl #{application_uri}/apc_clear.php"
-      run "rm #{latest_release}/apc_clear.php"
-    end
+
   end
 
   namespace :drush do
@@ -130,4 +124,38 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
   end
+
+  namespace :php do
+
+    # WARNING! This task must be executed AFTER deploy:create_symlink, because it
+    # depends on the newly-created docroot being web-accessible.
+    # NOTE: This method of clearing the cache was inspired by: http://stackoverflow.com/a/3580939
+    task :apc_clear do
+      puts 'Clearing APC Cache to prevent memory allocation errors.'
+
+      apc_clear_basename = 'apc_clear.php'
+      apc_clear_path = latest_release + '/' + apc_clear_basename
+      apc_clear_uri = application_uri + '/' + apc_clear_basename
+
+      apc_clear_code = <<-CODE
+      <?php
+      apc_clear_cache();
+      apc_clear_cache('user');
+      apc_clear_cache('opcode');
+      CODE
+      put apc_clear_code, apc_clear_path
+
+      puts 'Sending HTTP GET request to: ' + apc_clear_uri
+      uri = URI.parse(apc_clear_uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.request_uri)
+      response = http.request(request)
+      if response.code != '200'
+        raise "Failed to clear APC cache. GET #{apc_clear_uri} returned #{response.code}."
+      end
+
+      run "rm #{apc_clear_path}"
+    end
+  end
+
 end

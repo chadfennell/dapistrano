@@ -5,13 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = "dapistrano"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Chad Fennell"]
-  s.date = "2013-07-11"
+  s.authors = ["Chad Fennell", "David Naughton"]
+  s.date = "2013-10-24"
   s.description = "Deploy a Drupal site by building from a Drush Make file for each release."
-  s.email = "libsys@gmail.com"
+  s.email = ["libsys@gmail.com", "naughton@umn.edu"]
+  s.executables = ["dapify"]
   s.extra_rdoc_files = [
     "README.markdown"
   ]
@@ -19,22 +20,13 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION",
+    "bin/dapify",
     "dapistrano.gemspec",
     "lib/dapistrano.rb"
   ]
-  s.executables << 'dapify'
   s.homepage = "https://github.com/chadfennell/dapistrano"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.25"
+  s.rubygems_version = "2.0.3"
   s.summary = "Deploy Drupal with Capistrano and Drush Make"
-
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
 end
 

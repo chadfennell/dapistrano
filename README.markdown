@@ -20,6 +20,8 @@ cloning this dapistrano repository on your deployment machine, and then:
     $ gem install railsless-deploy
     $ gem install dapistrano --local /path/to/dapistrano-0.0.1.gem
 
+*Note:* dapistrano is known to work only with capistrano 2.15.5. It is known to fail with capistrano 3. Better dependency handling is coming in a future release.
+
 ### Initialize New Deployment Directory
 
     $ cd myproject
