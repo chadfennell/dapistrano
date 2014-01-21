@@ -36,7 +36,11 @@ Capistrano::Configuration.instance(:must_exist).load do
   # files that frequently require local customization
   set :override_core_files, ['robots.txt', '.htaccess']
 
-  after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "drush:cache_clear"
+  # Custom symlinks allow for apps to exist along side drupal
+  after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
+
+  # Allow for drupal drush commands and such to be issued
+  after "deploy", "custom_tasks:post_deploy"
 
   # WARNING! This task must be executed AFTER deploy:create_symlink, because it
   # depends on the newly-created docroot being web-accessible.
