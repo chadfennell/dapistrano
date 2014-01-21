@@ -16,7 +16,7 @@ Deploy Drupal with Drush Make.
 For now, dapistrano is a UMN-internal utility, and not released to rubygems.org. Therefore, start by
 cloning this dapistrano repository on your deployment machine, and then:
 
-    $ gem install capistrano
+    $ gem install capistrano -v 2.15.5 
     $ gem install railsless-deploy
     $ gem install dapistrano --local /path/to/dapistrano-0.0.1.gem
 
