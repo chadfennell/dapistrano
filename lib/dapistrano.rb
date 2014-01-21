@@ -152,6 +152,10 @@ Capistrano::Configuration.instance(:must_exist).load do
       puts 'Sending HTTP GET request to: ' + apc_clear_uri
       uri = URI.parse(apc_clear_uri)
       http = Net::HTTP.new(uri.host, uri.port)
+      if (uri.scheme == 'https')
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
       request = Net::HTTP::Get.new(uri.request_uri)
       response = http.request(request)
       if response.code != '200'
