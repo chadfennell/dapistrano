@@ -152,17 +152,30 @@ Capistrano::Configuration.instance(:must_exist).load do
       puts 'Sending HTTP GET request to: ' + apc_clear_uri
       uri = URI.parse(apc_clear_uri)
       http = Net::HTTP.new(uri.host, uri.port)
-      if (uri.scheme == 'https')
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      end
+      http = support_https(uri.scheme, http)
       request = Net::HTTP::Get.new(uri.request_uri)
+      request = support_basic_auth(request)
       response = http.request(request)
       if response.code != '200'
         raise "Failed to clear APC cache. GET #{apc_clear_uri} returned #{response.code}."
       end
 
       run "rm #{apc_clear_path}"
+    end
+
+    def support_basic_auth(request)
+      if defined? basic_auth
+        request.basic_auth(basic_auth[0], basic_auth[1])
+      end
+      request
+    end
+
+    def support_https(scheme, http)
+      if (scheme == 'https')
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      end
+      http
     end
   end
 
