@@ -8,6 +8,8 @@ Gem::Specification.new do |s|
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.add_runtime_dependency "capistrano", ["<= 2.15.5"]
+  s.add_runtime_dependency "railsless-deploy"  
   s.authors = ["Chad Fennell", "David Naughton"]
   s.date = "2014-02-15"
   s.description = "Deploy a Drupal site by building from a Drush Make file for each release."
