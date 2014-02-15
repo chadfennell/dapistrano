@@ -39,11 +39,9 @@ This ```--path``` parameter tells Bundler where to install Dapistrano and its de
 
     $ bundle install --path vendor/bundle    
 
-Dapistrano and Capistrano come with executables. Use Bundler to create versions of those executables that will use only the gems in the bundle you just installed:
+Dapistrano and Capistrano come with executables. Use Bundler to ensure those executables will use only the gems in the bundle you just installed, and not any versions of those same gems that may be installed elsewhere:
 
     $ bundle install --binstubs
-    
-You should now have executables in ~/my-site-dapistrano/bin/.
 
 ## Initialize Project Directory
 
