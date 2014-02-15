@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/dapify",
-    "dapistrano-0.1.0.gem",
     "dapistrano.gemspec",
     "lib/dapistrano.rb"
   ]
