@@ -11,32 +11,52 @@ Deploy Drupal with Drush Make.
 
 ## Installation
 
-### Install dependencies
+### Bundler
 
-For now, dapistrano is a UMN-internal utility, and not released to rubygems.org. Therefore, start by
-cloning this dapistrano repository on your deployment machine, and then:
+We recommend using [Bundler](http://bundler.io/) to install Dapistrano. If you don't already have it installed:
 
-    $ gem install capistrano -v 2.15.5 
-    $ gem install railsless-deploy
-    $ gem install dapistrano --local /path/to/dapistrano-0.0.1.gem
+    $ sudo gem install bundler
+    
+The rest of these docs will assume you are using Bundler. 
 
-*Note:* dapistrano is known to work only with capistrano 2.15.5. It is known to fail with capistrano 3. Better dependency handling is coming in a future release.
+### Project Directory
 
-### Initialize New Deployment Directory
+All of the Dapistrano files for a Drupal website live in a single directory, even if you're installing that site on multiple machines. We'll use Bundler to install Dapistrano's dependency gems into this directory, too.
 
-    $ cd myproject
-    $ dapify .
+    $ mkdir ~/my-site-dapistrano/
+    $ cd ~/my-site-dapistrano/
+    
+### Gemfile
+
+Create a ```Gemfile``` that tells Bundler where to find Dapistrano and its dependencies:
+
+    source 'https://rubygems.org'
+    gem 'dapistrano', :git => 'git://github.com/chadfennell/dapistrano.git'
+
+### Install with Bundler
+
+This ```--path``` parameter tells Bundler where to install Dapistrano and its dependencies:
+
+    $ bundle install --path vendor/bundle    
+
+Dapistrano and Capistrano come with executables. Use Bundler to ensure those executables will use only the gems in the bundle you just installed, and not any versions of those same gems that may be installed elsewhere:
+
+    $ bundle install --binstubs
+
+## Initialize Project Directory
+
+    $ bin/dapify .
 
 * Configure config/deploy/development.rb (Optional: create staging.rb and production.rb configurations based on this file)
 * Create the directories specified in ":deploy_to"
 
-### Run the setup task
+## Run Setup
 
-    $ cap development deploy:setup
+    $ bin/cap development deploy:setup
 
-### Configure :deploy_to/shared directory
+## Configure :deploy_to/shared Directory
 
-    # Place a copy of .htaccess, robots.txt and settings.php in your :deploy_to/shared directory:
+Place a copy of ```.htaccess```, ```robots.txt``` and ```settings.php``` in your ```:deploy_to/shared``` directory:
 
     your_app_here.dev
     └── shared
@@ -48,7 +68,7 @@ cloning this dapistrano repository on your deployment machine, and then:
 
 ## Deploy!
 
-    $ cap development deploy
-    $ cap development deploy:rollback <-- You now have an "undo" button
-    $ cap development drupal:updatedb <-- Site into maintenance mode, drush updatedb run, site put back online
+    $ bin/cap development deploy
+    $ bin/cap development deploy:rollback <-- You now have an "undo" button
+    $ bin/cap development drupal:updatedb <-- Site into maintenance mode, drush updatedb run, site put back online
 
