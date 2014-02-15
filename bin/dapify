@@ -38,7 +38,6 @@ end
 files = {
   "Capfile" => unindent(<<-FILE),
   require 'rubygems'
-  require 'bundler/setup'
   require 'dapistrano'
 FILE
 
