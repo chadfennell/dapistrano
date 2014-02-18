@@ -74,7 +74,19 @@ set :runner_group, "deploy"
 role :web, "example.org", :primary => true
 
 # System path location of the drush command
-set :drush_command_path, "/usr/bin/drush"'}
+set :drush_command_path, "/usr/bin/drush"
+
+# Stage-specific tasks
+namespace :custom_tasks do
+  task :post_deploy, :except => { :no_release => true } do
+    # e.g. Make sure users don\'t accidentally get emailed from the dev server
+    # run "#{drush_command_path} --r=#{latest_release} vset --yes smtp_library sites\/all\/modules\/devel\/devel.module"
+  end
+
+  # Add your environment-specific symlinks
+  task :symlink do
+  end
+end'}
 
 base = ARGV.shift
 files.each do |file, content|
