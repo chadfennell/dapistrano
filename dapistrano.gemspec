@@ -24,8 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bundler", "~> 1.5"
   s.add_development_dependency "rake"
 
-  # TODO: Do we really need these anymore?
-  s.date = "2014-02-15"
+  # TODO: Do we really need this anymore?
   s.extra_rdoc_files = [
     "README.md"
   ]

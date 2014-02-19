@@ -190,5 +190,5 @@ end
 
 # may as well load it if we have it
 if Capistrano::Configuration.instance
-  Capistrano::Speak.load_into(Capistrano::Configuration.instance)
+  Capistrano::Dapistrano.load_into(Capistrano::Configuration.instance)
 end
