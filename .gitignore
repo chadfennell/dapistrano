@@ -1,7 +1,4 @@
-# Probably should enable this at some point, but waiting for now
-# in order to support previous non-bundler installation methods.
-# *.gem
-
+*.gem
 *.rbc
 .bundle
 .config
