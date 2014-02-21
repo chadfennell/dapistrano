@@ -21,10 +21,11 @@ The rest of these docs will assume you are using Bundler.
 
 ### Project Directory
 
-All of the Dapistrano files for a Drupal website live in a single directory, even if you're installing that site on multiple machines. We'll use Bundler to install Dapistrano's dependency gems into this directory, too.
+All of the Dapistrano files for a Drupal website live in a single directory, even if you're installing that site on 
+multiple machines. We'll use Bundler to install Dapistrano's dependency gems into this directory, too.
 
-    $ mkdir ~/my-site-dapistrano/
-    $ cd ~/my-site-dapistrano/
+    $ mkdir ~/example.com-dapistrano/
+    $ cd ~/example.com-dapistrano/
     
 ### Gemfile
 
@@ -35,31 +36,49 @@ Create a ```Gemfile``` that tells Bundler where to find Dapistrano and its depen
 
 ### Install with Bundler
 
-This ```--path``` parameter tells Bundler where to install Dapistrano and its dependencies:
+The ```--path``` parameter tells Bundler where to install Dapistrano and its dependencies:
 
     $ bundle install --path vendor/bundle    
 
-Dapistrano and Capistrano come with executables. Use Bundler to ensure those executables will use only the gems in the bundle you just installed, and not any versions of those same gems that may be installed elsewhere:
+Dapistrano and Capistrano come with executables. Use Bundler to ensure those executables will use only the gems in the
+bundle you just installed, and not any versions of those same gems that may be installed elsewhere. There are two ways to do this.
+We recommend this...
 
     $ bundle install --binstubs
+
+...which will install bundler-wrapped executables in ```./bin```. The rest of these docs will assume the use of this method.
+
+The other way is to prepend each executable call with ```bundle exec```. See the "Executables" section of [Gem Versioning and Bundler: Doing it Right](http://yehudakatz.com/2011/05/30/gem-versioning-and-bundler-doing-it-right/) for more details.
 
 ## Initialize Project Directory
 
     $ bin/dapify .
 
-* Configure config/deploy/development.rb (Optional: create staging.rb and production.rb configurations based on this file)
-* Create the directories specified in ":deploy_to"
+Dapistrano uses a Capistrano extension called [Multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension),
+which allows us to use a separate configuration file for each stage, or environment, to which you will deploy your Drupal site.
+Multistage expects to find configuration files, named ```#{stage}.rb```, in the ```config/deploy/``` directory. Dapistrano supports
+these stages:
+
+* development
+* staging
+* production
+
+```dapify``` creates a boilerplate ```config/deploy/development.rb``` file. Next:
+
+* Modify ```config/deploy/development.rb```, replacing the boilerplate values with your Drupal site's values.
+* Optional: Create ```staging.rb``` and/or ```production.rb``` configuration files.
+* Create the remote directories specified in ```:deploy_to``` in your configuration file(s).
 
 ## Run Setup
 
     $ bin/cap development deploy:setup
 
-## Configure :deploy_to/shared Directory
+## Populate :deploy_to/shared Directory
 
-Place a copy of ```.htaccess```, ```robots.txt``` and ```settings.php``` in your ```:deploy_to/shared``` directory:
+Place a copy of ```.htaccess```, ```robots.txt``` and ```settings.php``` in your remote ```:deploy_to/shared``` directory:
 
-    your_app_here.dev
-    └── shared
+    dev.example.com:#{:deploy_to}/
+    └── shared/
         ├── files/
         ├── private/
         ├── .htaccess <-- you manually add
