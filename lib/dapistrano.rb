@@ -87,6 +87,7 @@ module Capistrano
             run "ls #{latest_release} | grep \.make" do |channel, stream, make_file|
               run "cd #{latest_release}; #{drush_command_path} make #{args} #{make_file} ."
             end
+            run "rm #{make_file}"
             core_files = core_files_to_remove.map { |cf| File.join(latest_release, cf) }
             run "rm #{core_files.join(' ')}"
           end
