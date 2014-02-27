@@ -187,7 +187,7 @@ CODE
       end
     end
 
-    def remove_file_if_exists(file)
+    def self.remove_file_if_exists(file)
       run "if test -f #{file}; then rm #{file}; fi"
     end
 
