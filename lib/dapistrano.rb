@@ -1,5 +1,10 @@
 require 'capistrano'
 module Capistrano
+  class Configuration
+    def remove_file_if_exists(file)
+      run "if test -f #{file}; then rm #{file}; fi"
+    end
+  end
   module Dapistrano
     def self.load_into(configuration)
       configuration.load do
@@ -186,9 +191,6 @@ CODE
 
       end
 
-      def remove_file_if_exists(file)
-        run "if test -f #{file}; then rm #{file}; fi"
-      end
 
     end
   end
