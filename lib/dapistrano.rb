@@ -4,6 +4,15 @@ module Capistrano
     def remove_file_if_exists(file)
       run "if test -f #{file}; then rm #{file}; fi"
     end
+    def remove_dir_if_exists(dir)
+      run "if test -d #{dir}; then rm -rf #{dir}; fi"
+    end
+    def symlink_file_if_exists(file, link)
+      run "if test -f #{file}; then ln -nfs #{file} #{link}; fi"
+    end
+    def symlink_dir_if_exists(dir, link)
+      run "if test -d #{dir}; then ln -nfs #{dir} #{link}; fi"
+    end
   end
   module Dapistrano
     def self.load_into(configuration)
