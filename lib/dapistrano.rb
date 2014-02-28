@@ -102,6 +102,10 @@ module Capistrano
               run "cd #{latest_release}; #{drush_command_path} make #{args} #{make_file} ."
               run "rm #{latest_release}/#{make_file}"
             end
+            
+            # If there's a README.md that accompanies the drush make file, remove it, too:
+            remove_file_if_exists( "#{latest_release}/README.md" )
+
             core_files = core_files_to_remove.map { |cf| File.join(latest_release, cf) }
             run "rm #{core_files.join(' ')}"
           end
