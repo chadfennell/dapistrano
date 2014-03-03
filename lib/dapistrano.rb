@@ -48,7 +48,8 @@ module Capistrano
           'INSTALL.txt',
           'LICENSE.txt',
           'MAINTAINERS.txt',
-          'UPGRADE.txt'
+          'UPGRADE.txt',
+          'sites/default/default.settings.php',
         ]
 
         # files that frequently require local customization
