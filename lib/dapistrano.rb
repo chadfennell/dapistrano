@@ -85,7 +85,8 @@ module Capistrano
             sub_dirs = shared_children.map { |d| File.join(shared_path, d) }
             run "#{try_sudo} mkdir -p #{sub_dirs.join(' ')}"
             run "#{try_sudo} chown -R #{user}:#{runner_group} #{shared_path}"
-            run "#{try_sudo} chmod -R 2775 #{shared_path}"
+            # Ensure that we don't introduce a security risk via setgid on any already-existing files!
+            run "#{try_sudo} find #{shared_path} -type d -exec chmod 2775 {} \;"
           end
 
           # removed non rails stuff, ensure group writabilty
