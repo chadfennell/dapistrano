@@ -86,7 +86,7 @@ module Capistrano
             run "#{try_sudo} mkdir -p #{sub_dirs.join(' ')}"
             run "#{try_sudo} chown -R #{user}:#{runner_group} #{shared_path}"
             # Ensure that we don't introduce a security risk via setgid on any already-existing files!
-            run "#{try_sudo} find #{shared_path} -type d -exec chmod 2775 {} \;"
+            run "#{try_sudo} find #{shared_path}" . ' -type d -exec chmod 2775 {} \;'
           end
 
           # removed non rails stuff, ensure group writabilty
