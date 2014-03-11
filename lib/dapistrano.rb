@@ -56,8 +56,8 @@ module Capistrano
         set :override_core_files, ['robots.txt', '.htaccess']
 
         # Custom symlinks allow for apps to exist along side drupal
-        #after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
-        before "deploy:finalize_update", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
+        #before "deploy:finalize_update", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
+        before "deploy:finalize_update", "drupal:update_code", "custom_tasks:symlink", "drush:cache_clear"
 
         # Allow for drupal drush commands and such to be issued
         after "deploy", "custom_tasks:post_deploy"
