@@ -35,7 +35,8 @@ module Capistrano
         set :scm, :git
         set :branch, "master"
         set :drush_command_path, "drush"
-        set :group_writable, true
+        # This is the default. Don't think we need to re-set it.
+        #set :group_writable, true
         set :use_sudo, false
 
         set(:deploy_to) { "/var/www/#{application}" }
@@ -58,11 +59,13 @@ module Capistrano
           'LICENSE.txt',
           'MAINTAINERS.txt',
           'UPGRADE.txt',
-          'sites/default/default.settings.php',
+          # We should be deleting the existing sites/default before we link in the one from shared...
+          #'sites/default/default.settings.php',
         ]
 
         # files that frequently require local customization
-        set :override_core_files, ['robots.txt', '.htaccess']
+        # These should be automatically over-written, by :shared_symlinks.
+        #set :override_core_files, ['robots.txt', '.htaccess']
 
         # Custom symlinks allow for apps to exist along side drupal
         before "deploy:finalize_update", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
@@ -128,9 +131,9 @@ module Capistrano
             shared_symlinks.each do |asset|
               run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/#{asset}"
             end
-            override_core_files.each do |file|
-              run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
-            end
+            #override_core_files.each do |file|
+            #  run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
+            #end
           end
 
 
