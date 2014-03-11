@@ -39,7 +39,7 @@ module Capistrano
         set :use_sudo, false
 
         set(:deploy_to) { "/var/www/#{application}" }
-        set :shared_children, ['files', 'private']
+        set :shared_children, ['files', 'private', '.htaccess']
         set :core_files_to_remove, [
           'INSTALL.mysql.txt',
           'INSTALL.pgsql.txt',
