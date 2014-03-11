@@ -90,9 +90,9 @@ module Capistrano
           end
 
           # removed non rails stuff, ensure group writabilty
-          task :finalize_update, :roles => :web, :except => { :no_release => true } do
-            run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
-          end
+          #task :finalize_update, :roles => :web, :except => { :no_release => true } do
+          #  run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
+          #end
         end
 
         namespace :drupal do
@@ -112,16 +112,16 @@ module Capistrano
             run "rm #{core_files.join(' ')}"
           end
 
-          desc "Symlink settings and files to shared directory. This allows the settings.php and \
-            and sites/default/files directory to be correctly linked to the shared directory on a new deployment."
-          task :symlink_shared do
-            ["files", "private", "settings.php"].each do |asset|
-              run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/sites/default/#{asset}"
-            end
-            override_core_files.each do |file|
-              run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
-            end
-          end
+#          desc "Symlink settings and files to shared directory. This allows the settings.php and \
+#            and sites/default/files directory to be correctly linked to the shared directory on a new deployment."
+#          task :symlink_shared do
+#            ["files", "private", "settings.php"].each do |asset|
+#              run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/sites/default/#{asset}"
+#            end
+#            override_core_files.each do |file|
+#              run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
+#            end
+#          end
 
 
         end
