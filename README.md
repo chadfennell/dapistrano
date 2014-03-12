@@ -71,12 +71,12 @@ these stages:
 
 ## Run Setup
 
-This command creates empty configuration files and directories in ```:deploy_to/shared``` that are
+This command creates empty configuration files and directories in ```:deploy_to/shared/``` that are
 common or even required for setting up a Drupal site:
 
     $ bin/cap development deploy:setup
 
-## Populate :deploy_to/shared Directory
+## Populate :deploy_to/shared/
 
 Manually populate the empty files and directories, created by running the above command,
 with content specific to your site and environment. These are the most-commonly-used and -needed:
@@ -88,6 +88,18 @@ with content specific to your site and environment. These are the most-commonly-
         └── sites/default/
                   ├── settings.php
                   └── files/
+
+### Adding Custom Files and Directories to :deploy_to/shared/
+
+Dapistrano automatically creates symbolic links, in the ```:deploy_to/current/``` document root, to some files and directories
+in ```:deploy_to/shared/```. These are defined in the ```:shared_symlinks``` array. Customizing the symbolic links Dapistrano creates
+is as easy is modifying that array. In your recipes, you can override ```:shared_symlinks``` completely, or keep the defaults and
+add your custom files and directories to it, like this:
+
+```set :shared_symlinks, shared_symlinks + ['your','custom','items']```
+
+All items are assumed to be relative to ```:deploy_to/shared/```, and all links will be relative to ```:deploy_to/current/```.
+This allows for deep linking into directories created by drush make. For example, one of the default symbolic links is ```sites/default```.
 
 ## Deploy!
 
