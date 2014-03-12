@@ -31,8 +31,10 @@ multiple machines. We'll use Bundler to install Dapistrano's dependency gems int
 
 Create a ```Gemfile``` that tells Bundler where to find Dapistrano and its dependencies:
 
-    source 'https://rubygems.org'
-    gem 'dapistrano', :git => 'git://github.com/chadfennell/dapistrano.git'
+```ruby
+source 'https://rubygems.org'
+gem 'dapistrano', :git => 'git://github.com/chadfennell/dapistrano.git'
+```
 
 ### Install with Bundler
 
@@ -96,7 +98,9 @@ in ```:deploy_to/shared/```. These are defined in the ```:shared_symlinks``` arr
 is as easy is modifying that array. In your recipes, you can override ```:shared_symlinks``` completely, or keep the defaults and
 add your custom files and directories to it, like this:
 
-```set :shared_symlinks, shared_symlinks + ['your','custom','items']```
+```ruby
+set :shared_symlinks, shared_symlinks + ['your','custom','items']
+```
 
 All items are assumed to be relative to ```:deploy_to/shared/```, and all links will be relative to ```:deploy_to/current/```.
 This allows for deep linking into directories created by drush make. For example, one of the default symbolic links is ```sites/default```.
