@@ -35,16 +35,9 @@ module Capistrano
         set :scm, :git
         set :branch, "master"
         set :drush_command_path, "drush"
-        # This is the default. Don't think we need to re-set it.
-        #set :group_writable, true
         set :use_sudo, false
 
         set(:deploy_to) { "/var/www/#{application}" }
-
-        # railsless-deploy leaves this empty. We should, too, because capistrano uses it for
-        # rails-specific assets, and recommends that end-users do not override it.
-        #set :shared_children, ['files', 'private', '.htaccess']
-        #set :shared_children, ['favicon.ico','.htaccess','robots.txt','sites/default']
 
         set :shared_dirs_to_setup, ['sites/default/files','sites/default/private']
         set :shared_files_to_setup, ['favicon.ico','.htaccess','robots.txt']
@@ -93,17 +86,14 @@ module Capistrano
           task :setup, :except => { :no_release => true } do
             run "#{try_sudo} mkdir -p #{releases_path} #{shared_path}"
             run "#{try_sudo} chown -R #{user}:#{runner_group} #{deploy_to}"
-            sub_dirs = shared_dirs_to_setup.map { |d| File.join(shared_path, d) }
-            run "#{try_sudo} mkdir -p #{sub_dirs.join(' ')}"
+            shared_dirs = shared_dirs_to_setup.map { |d| File.join(shared_path, d) }
+            run "#{try_sudo} mkdir -p #{shared_dirs.join(' ')}"
+            shared_files = shared_files_to_setup.map { |f| File.join(shared_path, f) }
+            run "#{try_sudo} touch #{shared_files.join(' ')}"
             run "#{try_sudo} chown -R #{user}:#{runner_group} #{shared_path}"
             # Ensure that we don't introduce a security risk via setgid on any already-existing files!
             run "#{try_sudo} find #{shared_path}" + ' -type d -exec chmod 2775 {} \;'
           end
-
-          # removed non rails stuff, ensure group writabilty
-          #task :finalize_update, :roles => :web, :except => { :no_release => true } do
-          #  run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
-          #end
         end
 
         namespace :drupal do
@@ -113,11 +103,12 @@ module Capistrano
             args = fetch(:make_args, "")
             run "ls #{latest_release} | grep \.make" do |channel, stream, make_file|
               run "cd #{latest_release}; #{drush_command_path} make #{args} #{make_file} ."
-              run "rm #{latest_release}/#{make_file}"
+              run "rm -f #{latest_release}/#{make_file}"
             end
             
             # If there's a README.md that accompanies the drush make file, remove it, too:
-            remove_file_if_exists( "#{latest_release}/README.md" )
+            #remove_file_if_exists( "#{latest_release}/README.md" )
+            run "rm -f #{latest_release}/README.md"
 
             core_files = core_files_to_remove.map { |cf| File.join(latest_release, cf) }
             run "rm #{core_files.join(' ')}"
