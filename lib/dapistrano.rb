@@ -1,18 +1,8 @@
 require 'capistrano'
 module Capistrano
   class Configuration
-    def remove_file_if_exists(file)
-      run "if test -f #{file}; then rm #{file}; fi"
-    end
-    def remove_dir_if_exists(dir)
-      run "if test -d #{dir}; then rm -rf #{dir}; fi"
-    end
-    def symlink_file_if_exists(file, link)
-      run "if test -f #{file}; then ln -nfs #{file} #{link}; fi"
-    end
-    def symlink_dir_if_exists(dir, link)
-      run "if test -d #{dir}; then ln -nfs #{dir} #{link}; fi"
-    end
+    # If we want to define custom methods that can be called from user recipes,
+    # one way to do it is to define them here.
   end
   module Dapistrano
     def self.load_into(configuration)
@@ -52,13 +42,7 @@ module Capistrano
           'LICENSE.txt',
           'MAINTAINERS.txt',
           'UPGRADE.txt',
-          # We should be deleting the existing sites/default before we link in the one from shared...
-          #'sites/default/default.settings.php',
         ]
-
-        # files that frequently require local customization
-        # These should be automatically over-written, by :shared_symlinks.
-        #set :override_core_files, ['robots.txt', '.htaccess']
 
         # Custom symlinks allow for apps to exist along side drupal
         before "deploy:finalize_update", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
@@ -107,7 +91,6 @@ module Capistrano
             end
             
             # If there's a README.md that accompanies the drush make file, remove it, too:
-            #remove_file_if_exists( "#{latest_release}/README.md" )
             run "rm -f #{latest_release}/README.md"
 
             core_files = core_files_to_remove.map { |cf| File.join(latest_release, cf) }
@@ -117,16 +100,10 @@ module Capistrano
           desc "Symlink settings and files to shared directory. This allows the settings.php and \
             and sites/default/files directory to be correctly linked to the shared directory on a new deployment."
           task :symlink_shared do
-            #["files", "private", "settings.php"].each do |asset|
-            # run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/sites/default/#{asset}"
             shared_symlinks.each do |asset|
               run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/#{asset}"
             end
-            #override_core_files.each do |file|
-            #  run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
-            #end
           end
-
 
         end
 
