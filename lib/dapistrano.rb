@@ -1,18 +1,8 @@
 require 'capistrano'
 module Capistrano
   class Configuration
-    def remove_file_if_exists(file)
-      run "if test -f #{file}; then rm #{file}; fi"
-    end
-    def remove_dir_if_exists(dir)
-      run "if test -d #{dir}; then rm -rf #{dir}; fi"
-    end
-    def symlink_file_if_exists(file, link)
-      run "if test -f #{file}; then ln -nfs #{file} #{link}; fi"
-    end
-    def symlink_dir_if_exists(dir, link)
-      run "if test -d #{dir}; then ln -nfs #{dir} #{link}; fi"
-    end
+    # If we want to define custom methods that can be called from user recipes,
+    # one way to do it is to define them here.
   end
   module Dapistrano
     def self.load_into(configuration)
@@ -35,11 +25,14 @@ module Capistrano
         set :scm, :git
         set :branch, "master"
         set :drush_command_path, "drush"
-        set :group_writable, true
         set :use_sudo, false
 
         set(:deploy_to) { "/var/www/#{application}" }
-        set :shared_children, ['files', 'private']
+
+        set :shared_dirs_to_setup, ['sites/default/files','sites/default/private']
+        set :shared_files_to_setup, ['favicon.ico','.htaccess','robots.txt']
+        set :shared_symlinks, shared_files_to_setup + ['sites/default']
+        
         set :core_files_to_remove, [
           'INSTALL.mysql.txt',
           'INSTALL.pgsql.txt',
@@ -49,14 +42,10 @@ module Capistrano
           'LICENSE.txt',
           'MAINTAINERS.txt',
           'UPGRADE.txt',
-          'sites/default/default.settings.php',
         ]
 
-        # files that frequently require local customization
-        set :override_core_files, ['robots.txt', '.htaccess']
-
         # Custom symlinks allow for apps to exist along side drupal
-        after "deploy:update_code", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
+        before "deploy:finalize_update", "drupal:update_code", "drupal:symlink_shared", "custom_tasks:symlink", "drush:cache_clear"
 
         # Allow for drupal drush commands and such to be issued
         after "deploy", "custom_tasks:post_deploy"
@@ -79,19 +68,15 @@ module Capistrano
             will not destroy any deployed revisions or data.
           DESC
           task :setup, :except => { :no_release => true } do
-            dirs = [deploy_to, releases_path, shared_path].join(' ')
             run "#{try_sudo} mkdir -p #{releases_path} #{shared_path}"
             run "#{try_sudo} chown -R #{user}:#{runner_group} #{deploy_to}"
-            sub_dirs = shared_children.map { |d| File.join(shared_path, d) }
-            run "#{try_sudo} mkdir -p #{sub_dirs.join(' ')}"
+            shared_dirs = shared_dirs_to_setup.map { |d| File.join(shared_path, d) }
+            run "#{try_sudo} mkdir -p #{shared_dirs.join(' ')}"
+            shared_files = shared_files_to_setup.map { |f| File.join(shared_path, f) }
+            run "#{try_sudo} touch #{shared_files.join(' ')}"
             run "#{try_sudo} chown -R #{user}:#{runner_group} #{shared_path}"
             # Ensure that we don't introduce a security risk via setgid on any already-existing files!
             run "#{try_sudo} find #{shared_path}" + ' -type d -exec chmod 2775 {} \;'
-          end
-
-          # removed non rails stuff, ensure group writabilty
-          task :finalize_update, :roles => :web, :except => { :no_release => true } do
-            run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
           end
         end
 
@@ -102,11 +87,11 @@ module Capistrano
             args = fetch(:make_args, "")
             run "ls #{latest_release} | grep \.make" do |channel, stream, make_file|
               run "cd #{latest_release}; #{drush_command_path} make #{args} #{make_file} ."
-              run "rm #{latest_release}/#{make_file}"
+              run "rm -f #{latest_release}/#{make_file}"
             end
             
             # If there's a README.md that accompanies the drush make file, remove it, too:
-            remove_file_if_exists( "#{latest_release}/README.md" )
+            run "rm -f #{latest_release}/README.md"
 
             core_files = core_files_to_remove.map { |cf| File.join(latest_release, cf) }
             run "rm #{core_files.join(' ')}"
@@ -115,14 +100,10 @@ module Capistrano
           desc "Symlink settings and files to shared directory. This allows the settings.php and \
             and sites/default/files directory to be correctly linked to the shared directory on a new deployment."
           task :symlink_shared do
-            ["files", "private", "settings.php"].each do |asset|
-              run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/sites/default/#{asset}"
-            end
-            override_core_files.each do |file|
-              run "rm #{latest_release}/#{file} && ln -nfs #{shared_path}/#{file} #{latest_release}/#{file}"
+            shared_symlinks.each do |asset|
+              run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/#{asset}"
             end
           end
-
 
         end
 
