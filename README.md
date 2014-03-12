@@ -55,7 +55,7 @@ The other way is to prepend each executable call with ```bundle exec```. See the
     $ bin/dapify .
 
 Dapistrano uses a Capistrano extension called [Multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension),
-which allows us to use a separate configuration file for each stage, or environment, to which you will deploy your Drupal site.
+which allows us to use a separate configuration file for each stage, i.e. environment, to which you will deploy your Drupal site.
 Multistage expects to find configuration files, named ```#{stage}.rb```, in the ```config/deploy/``` directory. Dapistrano supports
 these stages:
 
@@ -71,19 +71,23 @@ these stages:
 
 ## Run Setup
 
+This command creates empty configuration files and directories in ```:deploy_to/shared``` that are
+common or even required for setting up a Drupal site:
+
     $ bin/cap development deploy:setup
 
 ## Populate :deploy_to/shared Directory
 
-Place a copy of ```.htaccess```, ```robots.txt``` and ```settings.php``` in your remote ```:deploy_to/shared``` directory:
+Manually populate the empty files and directories, created by running the above command,
+with content specific to your site and environment. These are the most-commonly-used and -needed:
 
     dev.example.com:#{:deploy_to}/
     └── shared/
-        ├── files/
-        ├── private/
-        ├── .htaccess <-- you manually add
-        ├── robots.txt <-- you manually add
-        └── settings.php <-- you manually add
+        ├── .htaccess
+        ├── robots.txt
+        └── sites/default/
+                  ├── settings.php
+                  └── files/
 
 ## Deploy!
 
