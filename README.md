@@ -73,7 +73,7 @@ these stages:
 
 ## Run Setup
 
-This command creates empty configuration files and directories in ```:deploy_to/shared/``` that are
+This command creates some, but not all, empty files and directories in ```:deploy_to/shared/``` that are
 common or even required for setting up a Drupal site:
 
     $ bin/cap development deploy:setup
@@ -89,7 +89,8 @@ with content specific to your site and environment. These are the most-commonly-
         ├── robots.txt
         └── sites/default/
                   ├── settings.php
-                  └── files/
+                  ├── files/
+                  └── private/
 
 ### Adding Custom Files and Directories to :deploy_to/shared/
 

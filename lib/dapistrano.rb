@@ -30,8 +30,8 @@ module Capistrano
         set(:deploy_to) { "/var/www/#{application}" }
 
         set :shared_dirs_to_setup, ['sites/default/files','sites/default/private']
-        set :shared_files_to_setup, ['favicon.ico','.htaccess','robots.txt']
-        set :shared_symlinks, shared_files_to_setup + ['sites/default']
+        set :shared_files_to_setup, ['favicon.ico']
+        set :shared_symlinks, shared_files_to_setup + ['.htaccess','robots.txt','sites/default']
         
         set :core_files_to_remove, [
           'INSTALL.mysql.txt',
