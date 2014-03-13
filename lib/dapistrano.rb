@@ -69,12 +69,12 @@ module Capistrano
           DESC
           task :setup, :except => { :no_release => true } do
             run "#{try_sudo} mkdir -p #{releases_path} #{shared_path}"
-            run "#{try_sudo} chown -R #{user}:#{runner_group} #{deploy_to}"
+            run "#{try_sudo} chgrp -R #{runner_group} #{releases_path}"
             shared_dirs = shared_dirs_to_setup.map { |d| File.join(shared_path, d) }
             run "#{try_sudo} mkdir -p #{shared_dirs.join(' ')}"
             shared_files = shared_files_to_setup.map { |f| File.join(shared_path, f) }
             run "#{try_sudo} touch #{shared_files.join(' ')}"
-            run "#{try_sudo} chown -R #{user}:#{runner_group} #{shared_path}"
+            run "#{try_sudo} chgrp -R #{runner_group} #{shared_path}"
             # Ensure that we don't introduce a security risk via setgid on any already-existing files!
             run "#{try_sudo} find #{shared_path}" + ' -type d -exec chmod 2775 {} \;'
           end
