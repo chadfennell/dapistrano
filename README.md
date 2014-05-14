@@ -110,5 +110,5 @@ This allows for deep linking into directories created by drush make. For example
 
     $ bin/cap development deploy
     $ bin/cap development deploy:rollback <-- You now have an "undo" button
-    $ bin/cap development drupal:updatedb <-- Site into maintenance mode, drush updatedb run, site put back online
+    $ bin/cap development drush:updatedb <-- Site into maintenance mode, drush updatedb run, site put back online
 
